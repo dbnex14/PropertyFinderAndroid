@@ -11,6 +11,24 @@ import {
   Image,
 } from 'react-native';
 
+function urlForQueryAndPage(key, value, pageNumber) {
+  const data = {
+    country: 'de',
+    pretty: '1',
+    ecoding: 'json',
+    listing_type: 'buy',
+    action: 'search_listings',
+    page: pageNumber,
+  };
+
+  data[key] = value;
+  const querystring = Object.keys(data)
+    .map(key => key + '=' + encodeURIComponent(data[key]))
+    .join('&');
+
+  return 'https://api.nestoria.de/api?' + querystring;
+}
+
 export default class SearchPage extends Component<{}> {
   static navigationOptions = {
     title: 'Property Finder',
@@ -19,18 +37,30 @@ export default class SearchPage extends Component<{}> {
   constructor(props){
     super(props);
     this.state = {
-      searchString: 'london'
+      searchString: 'london',
+      isLoading: false,
     };
   }
 
   _onSearchTextChanged = (event) => {
     console.log('_onSearchTextChanged');
     this.setState({ searchString: event.nativeEvent.text });
-    console.log('Current: ' + this.state.searchString + ', Next: ' + event.nativeEvent.text);
+    // console.log('Current: ' + this.state.searchString + ', Next: ' + event.nativeEvent.text);
+  };
+
+  _executeQuery = (query) => {
+    console.log(query);
+    this.setState({ isLoading: true });
+  };
+
+  _onSearchPressed = () => {
+    const query = urlForQueryAndPage('place_name', this.state.searchString, 1);
+    this._executeQuery(query);
   };
 
   render() {
-    console.log('SearchPage.render');
+    const spinner = this.state.isLoading ? <ActivityIndicator size='large' /> : null;
+    // console.log('SearchPage.render');
 
     return (
       <View style={styles.container}>
@@ -52,13 +82,16 @@ export default class SearchPage extends Component<{}> {
           />
 
           <Button
-            onPress={() => {}}
+            onPress={this._onSearchPressed}
             color='#48BBEC'
             title='Go'
           />
         </View>
 
         <Image source={require('./Resources/house.png')} style={styles.image} />
+
+        {spinner}
+
       </View>
     );
   }
