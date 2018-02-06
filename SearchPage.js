@@ -31,13 +31,13 @@ function urlForQueryAndPage(key, value, pageNumber) {
 
 export default class SearchPage extends Component<{}> {
   static navigationOptions = {
-    title: 'Property Finder',
+    title: 'Immobilien Marktführer',
   };
 
   constructor(props){
     super(props);
     this.state = {
-      searchString: 'berlin',
+      searchString: '',
       isLoading: false,
       message: '',
     };
@@ -59,7 +59,7 @@ export default class SearchPage extends Component<{}> {
       .catch(error =>
         this.setState({
           isLoading: false,
-          message: 'Something bad happened ' + error
+          message: 'Etwas schlimmes passiert!  ' + error
         }));
   };
 
@@ -68,7 +68,7 @@ export default class SearchPage extends Component<{}> {
     if (response.application_response_code.substr(0, 1) === '1') {
       console.log('Properties found: ' + response.listings.length);
     } else {
-      this.setState({ message: 'Location not recognized, please try again.' });
+      this.setState({ message: 'Ort nicht erkennbar, versuchen Sie bitte noch einmal.' });
     }
   };
 
@@ -83,12 +83,12 @@ export default class SearchPage extends Component<{}> {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.description}>
-          Search for houses to buy!
+        <Text style={styles.title}>
+          Wohnungssuche leicht gemacht!
         </Text>
 
         <Text style={styles.description}>
-          Search by place-name or postcode.
+          Wo suchen Sie?  Ort oder PLZ.
         </Text>
 
         <View style={styles.flowRight}>
@@ -97,17 +97,17 @@ export default class SearchPage extends Component<{}> {
             style={styles.searchInput}
             value={this.state.searchString}
             onChange={this._onSearchTextChanged}
-            placeholder='Search via name or postcode'
+            placeholder='Suche nach Ort oder PLZ'
           />
 
           <Button
             onPress={this._onSearchPressed}
-            color='#48BBEC'
-            title='Go'
+            color='#27ae60'
+            title='Suchen'
           />
         </View>
 
-        <Image source={require('./Resources/house.png')} style={styles.image} />
+        <Image source={require('./Resources/house-icon.png')} style={styles.image} />
 
         {spinner}
 
@@ -118,16 +118,26 @@ export default class SearchPage extends Component<{}> {
 }
 
 const styles = StyleSheet.create ({
-  description: {
-    marginBottom: 20,
+  title: {
+    marginTop: 40,
+    marginBottom: 18,
     fontSize: 18,
     textAlign: 'center',
-    color: '#656565'
+    color: '#6f6766'
+  },
+  description: {
+    marginBottom: 20,
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#6f6766'
   },
   container: {
-    padding: 30,
-    marginTop: 65,
-    alignItems: 'center'
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginTop: 5,
+    alignItems: 'center',
+    backgroundColor: '#fef5e7',
+    flex: 1,
   },
   flowRight: {
     flexDirection: 'row',
@@ -141,12 +151,13 @@ const styles = StyleSheet.create ({
     flexGrow: 1,
     fontSize: 18,
     borderWidth: 1,
-    borderColor: '#48BBEC',
-    borderRadius: 8,
-    color: '#48BBEC',
+    borderColor: '#27ae60',
+    borderRadius: 4,
+    color: '#27ae60',
   },
   image: {
     width: 217,
-    height: 138,
+    height: 220,
+    marginBottom: 20,
   },
 });
