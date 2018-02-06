@@ -13,12 +13,12 @@ import {
 
 function urlForQueryAndPage(key, value, pageNumber) {
   const data = {
-    country: 'de',
+    encoding: 'json',
     pretty: '1',
-    ecoding: 'json',
-    listing_type: 'buy',
-    action: 'search_listings',
     page: pageNumber,
+    action: 'search_listings',
+    country: 'de',
+    listing_type: 'buy',
   };
 
   data[key] = value;
@@ -37,8 +37,9 @@ export default class SearchPage extends Component<{}> {
   constructor(props){
     super(props);
     this.state = {
-      searchString: 'london',
+      searchString: 'berlin',
       isLoading: false,
+      message: '',
     };
   }
 
@@ -51,6 +52,24 @@ export default class SearchPage extends Component<{}> {
   _executeQuery = (query) => {
     console.log(query);
     this.setState({ isLoading: true });
+
+    fetch(query)
+      .then(response => response.json())
+      .then(json => this._handleResponse(json.response))
+      .catch(error =>
+        this.setState({
+          isLoading: false,
+          message: 'Something bad happened ' + error
+        }));
+  };
+
+  _handleResponse = (response) => {
+    this.setState({ isLoading: false, message: '' });
+    if (response.application_response_code.substr(0, 1) === '1') {
+      console.log('Properties found: ' + response.listings.length);
+    } else {
+      this.setState({ message: 'Location not recognized, please try again.' });
+    }
   };
 
   _onSearchPressed = () => {
@@ -92,6 +111,7 @@ export default class SearchPage extends Component<{}> {
 
         {spinner}
 
+        <Text style={styles.description}>{this.state.message}</Text>
       </View>
     );
   }
