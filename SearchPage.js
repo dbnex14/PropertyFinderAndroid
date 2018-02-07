@@ -66,7 +66,8 @@ export default class SearchPage extends Component<{}> {
   _handleResponse = (response) => {
     this.setState({ isLoading: false, message: '' });
     if (response.application_response_code.substr(0, 1) === '1') {
-      console.log('Properties found: ' + response.listings.length);
+      //console.log('Properties found: ' + response.listings.length);
+      this.props.navigation.navigate('Results', {listings: response.listings});
     } else {
       this.setState({ message: 'Ort nicht erkennbar, versuchen Sie bitte noch einmal.' });
     }
@@ -83,9 +84,9 @@ export default class SearchPage extends Component<{}> {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
+        {/* <Text style={styles.title}>
           Wohnungssuche leicht gemacht!
-        </Text>
+        </Text> */}
 
         <Text style={styles.description}>
           Wo suchen Sie?  Ort oder PLZ.
@@ -126,6 +127,7 @@ const styles = StyleSheet.create ({
     color: '#6f6766'
   },
   description: {
+    marginTop: 40,
     marginBottom: 20,
     fontSize: 16,
     textAlign: 'center',
